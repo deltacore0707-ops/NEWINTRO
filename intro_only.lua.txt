@@ -1,0 +1,311 @@
+-- // CONFIGURACIÓN DE LA INTRO
+local introShouldPlay = true
+local MUSICA_ID = "rbxassetid://76650356472656" -- KING NASIR DANCE - Buena Vida Mala Fama (Slowed Reverb) 🕺🔥
+local THEME_ACCENT = Color3.fromRGB(0, 0, 0) -- Negro elegante 🌑
+
+-- // VARIABLES GLOBALES REQUERIDAS
+local TweenService = game:GetService("TweenService")
+local ContentProvider = game:GetService("ContentProvider")
+local Lighting = game:GetService("Lighting")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local LP = Players.LocalPlayer
+
+if introShouldPlay then
+    local _TS = TweenService
+    local _PG = LP:WaitForChild("PlayerGui")
+
+    local introGui = Instance.new("ScreenGui")
+    introGui.Name = "ShadeDuels1CinematicIntro"
+    introGui.IgnoreGuiInset = true
+    introGui.DisplayOrder = 999
+    introGui.ResetOnSpawn = false
+    introGui.Parent = _PG
+
+    -- Sonido de Fondo Cinematográfico (Espacial)
+    local bgMusic = Instance.new("Sound")
+    bgMusic.Name = "IntroMusic"
+    bgMusic.SoundId = MUSICA_ID
+    bgMusic.Volume = 0.65
+    bgMusic.Looped = true
+    bgMusic.TimePosition = 1 -- ⏩ AVANZA LA MÚSICA 1 SEGUNDO AL INICIAR
+    bgMusic.Parent = introGui
+
+    -- Fondo Espacial Oscuro Original
+    local darkBg = Instance.new("Frame", introGui)
+    darkBg.Size = UDim2.new(1, 0, 1, 0)
+    darkBg.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    darkBg.BackgroundTransparency = 1
+    darkBg.BorderSizePixel = 0
+    darkBg.ZIndex = 1
+
+    local bgGrad = Instance.new("UIGradient", darkBg)
+    bgGrad.Color = ColorSequence.new(Color3.fromRGB(5, 5, 5), Color3.fromRGB(0, 0, 5))
+    bgGrad.Rotation = 90
+
+    -- =========================================================
+    -- LUNA CINEMÁTICA REALISTA
+    -- =========================================================
+    local moonContainer = Instance.new("Frame", introGui)
+    moonContainer.Size = UDim2.new(0, 140, 0, 140)
+    moonContainer.AnchorPoint = Vector2.new(0.5, 0.5)
+    moonContainer.Position = UDim2.new(0.78, 0, -0.3, 0)
+    moonContainer.BackgroundTransparency = 1
+    moonContainer.ZIndex = 3
+
+    local moonGlow = Instance.new("Frame", moonContainer)
+    moonGlow.Size = UDim2.new(2.2, 0, 2.2, 0)
+    moonGlow.AnchorPoint = Vector2.new(0.5, 0.5)
+    moonGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
+    moonGlow.BackgroundColor3 = Color3.fromRGB(200, 220, 255)
+    moonGlow.BackgroundTransparency = 1
+    moonGlow.BorderSizePixel = 0
+    moonGlow.ZIndex = 2
+    Instance.new("UICorner", moonGlow).CornerRadius = UDim.new(1, 0)
+
+    local moonHalo = Instance.new("Frame", moonContainer)
+    moonHalo.Size = UDim2.new(1.4, 0, 1.4, 0)
+    moonHalo.AnchorPoint = Vector2.new(0.5, 0.5)
+    moonHalo.Position = UDim2.new(0.5, 0, 0.5, 0)
+    moonHalo.BackgroundColor3 = Color3.fromRGB(255, 255, 240)
+    moonHalo.BackgroundTransparency = 1
+    moonHalo.BorderSizePixel = 0
+    moonHalo.ZIndex = 3
+    Instance.new("UICorner", moonHalo).CornerRadius = UDim.new(1, 0)
+
+    local moon = Instance.new("Frame", moonContainer)
+    moon.Size = UDim2.new(1, 0, 1, 0)
+    moon.BackgroundColor3 = Color3.fromRGB(240, 240, 230)
+    moon.BackgroundTransparency = 1
+    moon.BorderSizePixel = 0
+    moon.ZIndex = 4
+    Instance.new("UICorner", moon).CornerRadius = UDim.new(1, 0)
+
+    local moonGrad = Instance.new("UIGradient", moon)
+    moonGrad.Color = ColorSequence.new(Color3.fromRGB(255, 255, 240), Color3.fromRGB(150, 155, 170))
+    moonGrad.Rotation = 135
+
+    local craterData = {{0.25, 0.22, 22}, {0.58, 0.38, 12}, {0.6, 0.68, 16}, {0.32, 0.7, 9}}
+    local craters = {}
+    for i, cd in ipairs(craterData) do
+        local c = Instance.new("Frame", moon)
+        c.Size = UDim2.new(0, cd[3], 0, cd[3])
+        c.Position = UDim2.new(cd[1], 0, cd[2], 0)
+        c.BackgroundColor3 = Color3.fromRGB(170, 170, 165)
+        c.BackgroundTransparency = 1
+        c.BorderSizePixel = 0
+        c.ZIndex = 5
+        Instance.new("UICorner", c).CornerRadius = UDim.new(1, 0)
+        craters[i] = c
+    end
+
+    -- =========================================================
+    -- CAMPO DE ESTRELLAS EN MOVIMIENTO (DRIFT)
+    -- =========================================================
+    local stars = {}
+    for i = 1, 60 do
+        local s = Instance.new("Frame", introGui)
+        local size = math.random(1, 4)
+        s.Size = UDim2.new(0, size, 0, size)
+        s.Position = UDim2.new(math.random(), 0, math.random(), 0)
+        s.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        s.BackgroundTransparency = 1
+        s.BorderSizePixel = 0
+        s.ZIndex = 2
+        Instance.new("UICorner", s).CornerRadius = UDim.new(1, 0)
+        stars[i] = {
+            frame = s,
+            baseSize = size,
+            speed = 0.001 + (math.random() * 4 / 1000),
+            targetTrans = 0.05 + (math.random() * 35 / 100),
+        }
+    end
+
+    -- Loop de físicas de estrellas (Parallax)
+    local introActive = true
+    local driftConn = RunService.Heartbeat:Connect(function()
+        if not introActive then return end
+        for _, sd in ipairs(stars) do
+            local pos = sd.frame.Position
+            local newX = pos.X.Scale - sd.speed
+            if newX < -0.02 then newX = 1.02 end
+            sd.frame.Position = UDim2.new(newX, 0, pos.Y.Scale, pos.Y.Offset)
+        end
+    end)
+
+    -- =========================================================
+    -- SISTEMA DE METEORITOS ALEATORIOS ☄️
+    -- =========================================================
+    task.spawn(function()
+        while introActive do
+            task.wait(math.random(6, 15) / 10) -- Aparecen cada 0.6 a 1.5 segundos
+            if not introActive then break end
+
+            local meteor = Instance.new("Frame", introGui)
+            meteor.Size = UDim2.new(0, math.random(60, 110), 0, 2)
+            meteor.AnchorPoint = Vector2.new(0.5, 0.5)
+            meteor.Position = UDim2.new(math.random(1, 9) / 10, 0, -0.1, 0)
+            meteor.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            meteor.BackgroundTransparency = 0.2
+            meteor.BorderSizePixel = 0
+            meteor.Rotation = math.random(25, 35) -- Dirección diagonal hacia abajo
+            meteor.ZIndex = 3
+
+            local mGlow = Instance.new("UIStroke", meteor)
+            mGlow.Color = THEME_ACCENT
+            mGlow.Thickness = 2
+            mGlow.Transparency = 0.4
+
+            -- Animación del meteorito cruzando el espacio
+            local targetX = meteor.Position.X.Scale + 0.4
+            local targetY = 1.2
+            _TS:Create(meteor, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                Position = UDim2.new(targetX, 0, targetY, 0),
+                BackgroundTransparency = 1
+            }):Play()
+
+            game:GetService("Debris"):AddItem(meteor, 0.6)
+        end
+    end)
+
+    -- Contenedor del Título Central
+    local center = Instance.new("Frame", introGui)
+    center.AnchorPoint = Vector2.new(0.5, 0.5)
+    center.Position = UDim2.new(0.5, 0, 0.5, 0)
+    center.Size = UDim2.new(0, 600, 0, 240)
+    center.BackgroundTransparency = 1
+    center.ZIndex = 5
+
+    local lineTop = Instance.new("Frame", center)
+    lineTop.AnchorPoint = Vector2.new(0.5, 0)
+    lineTop.Position = UDim2.new(0.5, 0, 0, 50)
+    lineTop.Size = UDim2.new(0, 0, 0, 2)
+    lineTop.BackgroundColor3 = THEME_ACCENT
+    lineTop.BorderSizePixel = 0
+    lineTop.ZIndex = 6
+
+    local title = Instance.new("TextLabel", center)
+    title.Size = UDim2.new(1, 0, 0, 80)
+    title.Position = UDim2.new(0, 0, 0, 75)
+    title.BackgroundTransparency = 1
+    title.Text = "Shade Duels #1"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.Font = Enum.Font.GothamBlack
+    title.TextSize = 72
+    title.TextTransparency = 1
+    title.TextStrokeTransparency = 1
+    title.TextStrokeColor3 = THEME_ACCENT
+    title.ZIndex = 7
+
+    local subtitle = Instance.new("TextLabel", center)
+    subtitle.Size = UDim2.new(1, 0, 0, 24)
+    subtitle.Position = UDim2.new(0, 0, 0, 165)
+    subtitle.BackgroundTransparency = 1
+    subtitle.Text = "Shade Duels │ Season #1"
+    subtitle.TextColor3 = THEME_ACCENT
+    subtitle.Font = Enum.Font.GothamMedium
+    subtitle.TextSize = 18
+    subtitle.TextTransparency = 1
+    subtitle.ZIndex = 7
+
+    local lineBot = Instance.new("Frame", center)
+    lineBot.AnchorPoint = Vector2.new(0.5, 1)
+    lineBot.Position = UDim2.new(0.5, 0, 1, -20)
+    lineBot.Size = UDim2.new(0, 0, 0, 2)
+    lineBot.BackgroundColor3 = THEME_ACCENT
+    lineBot.BorderSizePixel = 0
+    lineBot.ZIndex = 6
+
+    -- Estrella Fugaz de Alta Velocidad Principal
+    local shootStar = Instance.new("Frame", introGui)
+    shootStar.Size = UDim2.new(0, 120, 0, 2)
+    shootStar.AnchorPoint = Vector2.new(0.5, 0.5)
+    shootStar.Position = UDim2.new(-0.1, 0, 0.18, 0)
+    shootStar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    shootStar.BackgroundTransparency = 1
+    shootStar.BorderSizePixel = 0
+    shootStar.Rotation = 20
+    shootStar.ZIndex = 3
+
+    local shootGlow = Instance.new("UIStroke", shootStar)
+    shootGlow.Color = Color3.fromRGB(0, 0, 0)
+    shootGlow.Thickness = 4
+    shootGlow.Transparency = 0.5
+
+    task.spawn(function() pcall(function() ContentProvider:PreloadAsync({bgMusic}) end) end)
+
+    -- =========================================================
+    -- SECUENCIA EN FASES
+    -- =========================================================
+
+    bgMusic:Play()
+
+    -- FASE 1 (0.0s - 0.6s)
+    _TS:Create(darkBg, TweenInfo.new(0.5), {BackgroundTransparency = 0.4}):Play()
+    for _, sd in ipairs(stars) do
+        task.delay(math.random() * 60 / 100, function()
+            _TS:Create(sd.frame, TweenInfo.new(0.4 + math.random() * 0.4), {BackgroundTransparency = sd.targetTrans}):Play()
+        end)
+    end
+    task.wait(0.6)
+
+    -- FASE 2 (0.6s - 1.8s)
+    _TS:Create(moonContainer, TweenInfo.new(1.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0.78, 0, 0.24, 0)}):Play()
+    _TS:Create(moon, TweenInfo.new(0.8), {BackgroundTransparency = 0}):Play()
+    _TS:Create(moonHalo, TweenInfo.new(1), {BackgroundTransparency = 0.55}):Play()
+    _TS:Create(moonGlow, TweenInfo.new(1.2), {BackgroundTransparency = 0.78}):Play()
+    for _, c in ipairs(craters) do _TS:Create(c, TweenInfo.new(1), {BackgroundTransparency = 0.4}):Play() end
+    task.wait(1.2)
+
+    -- FASE 3 (1.8s - 2.6s)
+    task.spawn(function()
+        _TS:Create(shootStar, TweenInfo.new(0.06), {BackgroundTransparency = 0.1}):Play()
+        _TS:Create(shootStar, TweenInfo.new(0.7, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Position = UDim2.new(1.2, 0, 0.42, 0)}):Play()
+        task.wait(0.55)
+        _TS:Create(shootStar, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
+    end)
+
+    _TS:Create(lineTop, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 480, 0, 2)}):Play()
+    _TS:Create(lineBot, TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(0, 480, 0, 2)}):Play()
+    task.wait(0.15)
+
+    _TS:Create(title, TweenInfo.new(0.55, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {TextTransparency = 0, TextStrokeTransparency = 0.3}):Play()
+    task.wait(0.55)
+
+    -- FASE 4 (2.6s - 3.3s)
+    _TS:Create(subtitle, TweenInfo.new(0.45), {TextTransparency = 0}):Play()
+    task.wait(0.25)
+    for i = 1, 3 do
+        _TS:Create(title, TweenInfo.new(0.07), {TextColor3 = THEME_ACCENT}):Play()
+        task.wait(0.07)
+        _TS:Create(title, TweenInfo.new(0.07), {TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+        task.wait(0.07)
+    end
+
+    task.wait(1.4)
+
+    -- FASE 5 (Salida)
+    _TS:Create(center, TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 0)}):Play()
+    _TS:Create(title, TweenInfo.new(0.5), {TextTransparency = 1, TextStrokeTransparency = 1}):Play()
+    _TS:Create(subtitle, TweenInfo.new(0.45), {TextTransparency = 1}):Play()
+    _TS:Create(lineTop, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 2)}):Play()
+    _TS:Create(lineBot, TweenInfo.new(0.45, Enum.EasingStyle.Quart, Enum.EasingDirection.In), {Size = UDim2.new(0, 0, 0, 2)}):Play()
+
+    _TS:Create(darkBg, TweenInfo.new(0.7), {BackgroundTransparency = 1}):Play()
+    _TS:Create(moonContainer, TweenInfo.new(0.7, Enum.EasingStyle.Quad), {Position = UDim2.new(0.78, 0, 1.2, 0)}):Play()
+    _TS:Create(moon, TweenInfo.new(0.7), {BackgroundTransparency = 1}):Play()
+    _TS:Create(moonHalo, TweenInfo.new(0.7), {BackgroundTransparency = 1}):Play()
+    _TS:Create(moonGlow, TweenInfo.new(0.7), {BackgroundTransparency = 1}):Play()
+    _TS:Create(bgMusic, TweenInfo.new(0.7), {Volume = 0}):Play()
+
+    for _, c in ipairs(craters) do _TS:Create(c, TweenInfo.new(0.6), {BackgroundTransparency = 1}):Play() end
+    for _, sd in ipairs(stars) do _TS:Create(sd.frame, TweenInfo.new(0.7), {BackgroundTransparency = 1}):Play() end
+
+    task.wait(0.8)
+
+    introActive = false
+    pcall(function() driftConn:Disconnect() end)
+    pcall(function() introGui:Destroy() end)
+end
+
+print("Shade Duels #1 intro cargado con éxito.")
